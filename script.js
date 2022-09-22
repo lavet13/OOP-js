@@ -93,3 +93,10 @@
 // Well, in each class we simply just write a new method, which is also called login. And then, according to
 // polymorphism, that login method will overwrite the login method that has been inherited from the user class.
 // And that's actually it
+
+//////////////////////////////////////////////////////
+// OOP in JavaScript
+// process of creating an instance is called instantiation.
+// In JavaScript we have something called prototypes, and all objects in JavaScript are linked to a certain
+// prototype object. So we say that each object has a prototype. And now here comes the magic. So,
+// the prototype object contains methods and properties that all objects that are linked to that prototype

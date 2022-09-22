@@ -28,19 +28,21 @@
 //  collections of data and without making them interact with one another. Also, we didn't have a way to generate
 //  objects programmatically. All we ever did was using simple object literals, but in OOP, we actually need
 //  a way to generate, so to create, new objects from our code. And to do that in traditional OOP, we use
-//  something called classes. You can think of a class as a blueprint, which can then be used to create
+//  something called CLASSES. You can think of a class as a blueprint, which can then be used to create
 //  new objects based on the rules described in the class. So it's just like an architecture where the architect
 //  develops a blueprint to exactly plan and describe a house. But the blueprint is really just an abstract plan,
 //  like a set of rules, but nothing tangible(заметный) that you can actually touch.
 //
-//  "How do we actually design classes? How do we model real-world data into classes?"
-// or in other words how do we actually model real-world data into classes? And that's of course a very
-// good question. Now the answer is, as you can imagine, not straightforward. So there is not a single correct
-// way of designing classes. There are, however, four fundamental principles that can guide us toward a good
-// class implementation. And these principles are abstraction, encapsulation, inheritance and polymorphism.
-// And these are actually techniques that can also be used outside of OOP, but they are especially relevant
-// in this context.
-// First one is abstraction. And abstraction basically means to ignore or to hide details that don't matter.
+// "How do we actually design classes? How do we model real-world data into classes?"
+// And that's of course a very good question. Now the answer is, as you can imagine, not straightforward.
+// So there is not a single correct way of designing classes. There are, however, 4 fundamental principles
+// that can guide us toward a good class implementation. And these principles are abstraction, encapsulation,
+// inheritance and polymorphism. And these are actually techniques that can also be used outside of OOP, but
+// they are especially relevant in this context.
+
+// First one is abstraction.
+
+// Abstraction basically means to ignore or to hide details that don't matter.
 // This allows us to get an overview perspective of whatever it is that we are implementing instead of
 // messing(возиться) with details that don't really matter to our implementation.
 // Abstraction is really important, not just in OOP, but in programming in general. In fact, we create and use
@@ -49,7 +51,9 @@
 // And we don't have to because once more, the low-level details of how exactly it works has been obstructed
 // away from us. We are simply the user. And so we can simply use that function without completely understanding
 // it and without having to implement it ourselves. So that's abstraction, which actually blends in with the next
-// principle, which is encapsulation. Encapsulation is basically means to keep some properties and methods
+// principle, which is encapsulation.
+
+// Encapsulation is basically means to keep some properties and methods
 // private inside the class so that they're not accessible from outside the class. However, some methods can,
 // of course, be exposed as a public interface, which we call API. And this is exactly what I meant
 // at the beginning of the lecture when I said that interactions between objects happen through a public
@@ -63,3 +67,29 @@
 // the method, it might break that code that is relying on it. So in summary, we should always have the goal to
 // nicely encapsulate most of our state and methods and only leaving essential methods public for the reasons
 // that I just explained. Next up, we have inheritance.
+
+// Inheritance
+// When we have two separate identities(classes) we will
+// end up with a lot of duplicate code and we already know that that's bad. So in OOP, when we have two classes
+// that are closely related, like user and admin, we can have one class inherit from the other. So we will
+// have one parent class and one child class, and the child class then extends(расширяет) the parent class. But
+// what does all of that actually mean? Well, it's actually quite intuitive, I think. So just like you as a child
+// probably inherited some features of your parents, a child class inherits all the properties and methods from
+// it's parent class. Now, in more formal terms, inheritance makes all properties and methods of a certain class
+// available to a child class, which of course then forms a hierarchy between these two classes. And the goal
+// of this is to reuse logic that is common to both of the classes. In this case, both the admin and the user
+// need to log in. And so instead of writing that logic twice, it makes sense to inherit the login method from
+// the more global class, which is the parent class user, to the more specific class, which is the child class
+// admin. Now of course a child class can then also have it's own methods and properties. So at the end of the
+// day the child class ends up with some methods and properties from it's parent and some of it's own. So we
+// can say that the admin is also a user, but basically an extended user, so with some added functionality.
+
+// Finally, last principle is polymorphism. Means that a child class can overwrite a method that it inherited
+// from a parent class. And here are our user and admin classes again. But now we also have a third class, which
+// which is the author. Now admin and author are both really just special kinds of users, and so it makes sense
+// that they both inherit from the user class. Therefore, they inherit all the properties and methods from the
+// user class. Let's say that an admin requires a different kind of login method. For example, a more secure one
+// which has two-factor authentication. And let's say that we also need a special login method for authors.
+// Well, in each class we simply just write a new method, which is also called login. And then, according to
+// polymorphism, that login method will overwrite the login method that has been inherited from the user class.
+// And that's actually it

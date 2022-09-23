@@ -99,4 +99,48 @@
 // process of creating an instance is called instantiation.
 // In JavaScript we have something called prototypes, and all objects in JavaScript are linked to a certain
 // prototype object. So we say that each object has a prototype. And now here comes the magic. So,
-// the prototype object contains methods and properties that all objects that are linked to that prototype
+// the prototype object contains methods and properties that all objects that are linked to that prototype.
+// And this behavior is usually called prototypal inheritance. So, again, prototypal inheritance means that
+// all objects that are linked to a certain prototype object can use the methods and properties that are
+// defined on that prototype. So basically, objects inherit methods and properties from the prototype which
+// is the reason why this mechanism is called PROTOTYPAL INHERITANCE. Just note that this inheritance is
+// actually different from the inheritance that we talked about in the last lecture. So that was one class
+// inheriting from another class. But in this case, it's basically an instance inheriting from a class.
+// So that's very different and so keep that in mind. Now we can also say that objects delegate behavior
+// to the linked prototype object. And behavior is just another term for methods here. So besides
+// prototypal inheritance, we also call this mechanism DELEGATION. And that's also the reason why this
+// arrow is pointing UPWARDS because technically, objects delegate their behavior to the prototype.
+// On the other hand, in classical OOP with classes, the behavior, so the methods, are actually copied
+// from the class to the objects and so that is completely different. So he knows that this is a lot of new
+// stuff to take in, so a lot of new words and new concepts. But this is just to paint a very clear picture
+// and to give you the complete overview. What is matters to him is that i understand how does prototypal
+// inheritance actually works. Because, when we actually start using this in practice in the next lecture,
+// it won't really matter if it's called inheritance or delegation as long as it just works as intended
+// But since you came to this course to learn how things actually work in JavaScript, I'm giving you all
+// that information here. Even though for now it looks a little bit too much, but i'm sure you will find
+// it useful eventually. So actually, we will come back to this diagram and fill it with some more detail
+// after we have actually implemented prototypes in JavaScript. So after you have actually see how they work
+// in practice. And by then, i'm sure that all this will make 100% sense to you. But anyway, we have actually
+// already seen this mechanism in action many times before but without knowing that it was happening.
+// For example, each time that we used an array method like map, we are able to use that method because of
+// prototypal inheritance. So, when you go to MDN to check the documentation for any array method, what you will see
+// there is that it's actually called Array.prototype.map(), but why is that relevant? So, what does this mean?
+// Well, array.prototype is the prototype object of all the arrays that we create in JavaScript. Now this prototype
+// object contains all the array methods, including map. So, this is where they are actually defined. So, since
+// array.prototype is the prototype of the num array, it means that num is linked to that prototype. And therefore
+// it has access to all the methods that are defined on the array.prototype object, just like the map method. So,
+// in a sense, our array inherits the map method. Or again, we can also say that the array delegated the behavior
+// of mapping to it's prototype. So, you can choose whatever makes more sense in your mind. But what matters is
+// that the map method is actually not defined on the num array itself but on it's prototype. And of course, we're
+// gonna check out this behavior also in our code in practice. Now you might have a ton of questions in your head.
+// Like, how do we actually create prototypes? And, how do we link objects to prototypes? And how can we create new
+// objects without having classes from which we can instantiate objects? So, in summary, the question is  how do we
+// implement Object-Oriented Programming in JavaScript in practice? Well, in JavaScript there are actually three different
+// ways of doing all this:
+// 1. the constructor function technique;
+// 2. ES6 classes;
+// 3. Object.create();
+//
+// So first, constructor functions are a way of creating objects programmatically using a function which will also set
+// the new object's prototype. And this is actually how built-in objects like arrays or maps or sets are implemented.
+// Also, this is how OOP has been done in JavaScript.

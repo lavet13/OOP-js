@@ -167,7 +167,7 @@
 // function is that we call a constructor function with the new OPERATOR.
 
 // in OOP there is this convention that constructor functions always start with a capital letter
-// And in fact, other a build-in constructors like array or map, follow that convention as well
+// And in fact, other a build-in constructors like array or map or set, follow that convention as well
 // Now here i'm using a function expression but of course a function declaration will also work.
 // Now an arrow function will actually not work as a function constructor and that's because it doesn't have it's own
 // this keyword and we need that. So only function declarations and function expressions.
@@ -196,11 +196,11 @@ const Person = function (firstName, birthYear) {
     // developer. So the real magic really here is this new operator. And the most important thing to understand is
     // really these four steps.
 
-    // by the end of the function our this keyword now has these two new properties;
+    // by the end of the function our the "this" keyword now has these two new properties;
 };
 
 // we call the constructor function using the new keyword
-// this new operator is actually a very special operator because what it does is to call this function here. So this person
+// this new operator is actually a very special operator because what it does is to call this function here. So this Person
 // function, but it does a whole lot more than just that
 const jonas = new Person('Jonas', 1991);
 console.log(jonas);
@@ -227,7 +227,7 @@ console.log(jay instanceof Person);
 
 // So behind the scenes, there have been four steps.
 // 1. New empty object is created, then afterwards
-// 2. function is called, and (this = {}, so basically in the execution context of the person function, the this keyword
+// 2. function is called, and (this = {}, so basically in the execution context of the Person function, the this keyword
 // will point to this new object that was created in step number one) in this function call the this keyword will be set
 // to this newly created object.
 // 3. newly created object is linked to the prototype.
@@ -240,7 +240,8 @@ console.log(jay instanceof Person);
 // called prototype and that includes, of course, constructor functions. Now every object that's created by a certain
 // constructor function will get access to all the methods and properties that we define on the constructor prototype
 // property. So just to visualize in our case, this would be:
-console.log(Person.prototype);
+console.log(Person.prototype); // All the objects that are created through this constructor function will inherit, so they
+// will get access to all the methods and properties that are defined on this prototype property
 
 // that effectively solves this problem that we had before when we added the calcAge method directly to each of the
 // objects. We would have created a copy of this method and attached it to every single object and so that's why
@@ -254,3 +255,87 @@ Person.prototype.calcAge = function () {
 
 jonas.calcAge();
 matilda.calcAge();
+// But how and why does this actually work? Well, it works because any object always has access to the methods and properties
+// from it's prototype. And the prototype of Jonas and Matilda is Person.prototype;
+console.log(Object.getPrototypeOf(jonas)); // So the prototype of the Jonas object is essentially the prototype property of
+// the constructor function
+console.log(Person.prototype);
+console.log(jonas);
+console.log(Object.getPrototypeOf(jonas) === Person.prototype); // true, huh Jonas(sounded incredibly confusing, didn't it?
+// So shouldn't Person.prototype be the prototype of Person,  Well, actually, no. So this is the confusing part.
+// So Person.prototype is actually not the prototype of Person. But instead it is what's gonna be used as the prototype of
+// all the objects that are created with the Person constructor function, so that's a subtle but important difference that
+// you need to keep in mind and in fact, what i just said that is confirmed by this comparison
+// (Object.getPrototypeOf(jonas) === Person.prototype))
+
+console.log(jonas instanceof Person);
+console.log(Person.prototype.isPrototypeOf(jonas)); // this should also become true and indeed it is, so this confirms
+// one more time that Person.prototype is indeed the prototype of Jonas
+console.log(Person.prototype.isPrototypeOf(matilda)); // the same for Matilda of course as well
+console.log(Person.prototype.isPrototypeOf(Person)); // Person.prototype is not the prototype of Person, it is false, so
+// this very common confusion comes from bad naming of this property. So the fact that it's called prototype
+// kind of implies that this is the prototype of Person, but as we just learned, it is actually not. Probably shouldn't
+// be called prototype but instead something like prototypeOfLinkedObjects
+
+// Anyway, where does proto property on the Jonas object actually come from? Well, remember the new operator that we talked about
+// before, well, it contains step number three, which links the empty new object to the prototype.
+// So it creates this proto property and it sets it's value to the prototype property of the function that is being called
+// And so that's exactly what is written. IT SETS THE PROTO PROPERTY ON THE OBJECT TO THE PROTOTYPE PROPERTY OF THE CONSTRUCTOR FUNCTION
+
+Person.prototype.species = 'Homo Sapiens';
+console.log(jonas.species, matilda.species); // So own properties are only the ones that are declared directly on the object itself.
+// So not including the inherited properties.
+
+console.log(jonas.hasOwnProperty('species')); // false, that's because this property is not really inside of the Jonas object. It simply
+// has access to it because of it's prototype, so because it's in the prototype property of Person.
+
+//////////////////////////////////////////////////
+// Prototypal Inheritance and The Prototype Chain
+// Let's now consolidate the knowledge that we got in a nice diagram that brings everything together that we know so far
+// const jonas = new Person('jonas', 1990);
+// And everything starts with the Person the constructor function that we've been developing. Now this constructor function has a prototype
+// property which is an object and inside that object, we defined the calcAge method and Person.prototype itself actually also has a
+// reference back to Person which is the constructor property. So, essentially Person.prototype.constructor is gonna point back to Person
+// itself. Now remember, Person.prototype is actually not the prototype of Person but of all the objects that are created through the
+// Person function and speaking of the created objects let's now actually analyze how an object is created using the new operator and
+// the constructor function. So when we call a function, any function with the new operator:
+// 1. the first thing that is gonna happen is that a new empty object is created instantly.
+// 2. Then the this keyword in the function call is set to the newly created object. So, inside the function's execution context
+// this is now the new empty object and that's why in the function's code we set the name and birth year properties on the "this" keyword
+// because doing so will ultimately set them on the new object. So next comes the magical step.
+// 3. So now the new object is linked to the constructor function's prototype property so in this case, Person.prototype and this happens
+// internally by adding __proto__ to the new object. So Person.prototype is now the new objects prototype which is denoted in the
+// __proto__ property of Jonas. So again, underscore proto always points to an object prototype and that's true for all objects in JavaScript
+// 4. Finally, the new object is automatically returned from the function unless we explicitly return something else. But in a constructor
+// function like Person we usually never do that. Okay, and with this the result of the new operator and the Person constructor function is a
+// new object that we just created programmatically and that is now stored in the Jonas variable and this whole process that I just explained
+// is how it works with function constructors and also with ES6 classes but not with the Object.create syntax that we're gonna use later.
+// But anyway, why does this work this way and why is this technique so powerful and useful? and to answer that let's move on jonas.calcAge();
+// So, here we are attempting to call the calcAge function on the jonas object. However, JavaScript can actually not find the calcAge function
+// directly in the Jonas object. It is simply not there and we already observed this behavior. So, what happens now in this situation? Well,
+// if a property or a method cannot be found in a certain object JavaScript will look into it's prototype and there it is. So there is the
+// calcAge function that we were looking for and so JavaScript will simply use this one. That's how the calcAge function can run correctly
+// and return a result. And the behavior that we just described is what we already called prototypal inheritance or delegation. So the jonas
+// object inherited the calcAge method from it's prototype or in other words it delegated the calcAge functionality to it's prototype. Now,
+// the beauty of this is that we can create as many Person objects as we like and all of them will then inherit this method. So we can call
+// this calcAge method on all the Person objects without the method being directly attached to all the objects themselves and this is essential
+// for code performance. Just imagine that we had a 1,000 objects in the code and if all of them would have to carry the calcAge function
+// around then that would certainly impact the performance. So instead, they can all simply use the calcAge function from their common prototype
+// So that makes sense. Now the fact that Jonas is connected to a prototype and the ability of looking up methods and properties in a prototype
+// is what we call the prototype chain. So the jonas object and it's prototype basically form a prototype chain but actually the prototype chain
+// does not end here. So let's understand the prototype chain a bit better by zooming out and looking at the whole picture. So, here is the
+// diagram that we already had with the Person function constructor and it's prototype property and to Jonas object linked to it's prototype via
+// the underscore proto property, so nothing new yet. But now let's remember that Person.prototype itself is also an object and all objects in
+// JavaScript have a prototype. Therefore, Person.prototype itself must also have a prototype. And the prototype of Person.prototype is
+// Object.prototype. Why is that? Well, Person.prototype is just a simple object which means that it has been built by the built-in object
+// constructor function and this is actually the function that is called behind the scenes whenever we create an object literal. So just an object
+// simply with curly braces. So essentially the curly braces are just like a shortcut to writing a new object. But anyway, what matters here is that
+// Person.prototype itself needs to have a prototype and since it has been created by the object constructor function it's prototype is gonna be
+// Object.prototype, it's the same logic as with the Jonas object. So, since Jonas has been built by a Person, Person.prototype is the prototype of
+// Jonas. Now this entire series of links between the objects is what is called the prototype chain and Object.prototype is usually the top of the
+// prototype chain which means that it's prototype is null. So it's underscore proto property will simply point to null which then marks the end of
+// the prototype chain. So in a certain way the prototype chain is very similar to the scope chain but with prototypes. So, in the scope chain
+// whenever JavaScript can'nt find a certain variable in a certain scope, it looks up into the next scope and tries to find the
+// variable there. On the other hand in the prototype chain whenever JavaScript can't find a certain property or method in a certain object it's
+// gonna look up into the next prototype in the prototype chain and see if it can find it there. So again the prototype chain is pretty similar
+// to the scope chain but instead of working with scopes, it works with properties and methods in objects.

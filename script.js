@@ -111,7 +111,7 @@
 // prototypal inheritance, we also call this mechanism DELEGATION. And that's also the reason why this
 // arrow is pointing UPWARDS because technically, objects delegate their behavior to the prototype.
 // On the other hand, in classical OOP with classes, the behavior, so the methods, are actually copied
-// from the class to the objects and so that is completely different. So he knows that this is a lot of new
+// from the class to the objects and so that is completely different. So Jonas knows that this is a lot of new
 // stuff to take in, so a lot of new words and new concepts. But this is just to paint a very clear picture
 // and to give you the complete overview. What is matters to him is that i understand how does prototypal
 // inheritance actually works. Because, when we actually start using this in practice in the next lecture,
@@ -339,3 +339,15 @@ console.log(jonas.hasOwnProperty('species')); // false, that's because this prop
 // variable there. On the other hand in the prototype chain whenever JavaScript can't find a certain property or method in a certain object it's
 // gonna look up into the next prototype in the prototype chain and see if it can find it there. So again the prototype chain is pretty similar
 // to the scope chain but instead of working with scopes, it works with properties and methods in objects.
+//
+/////////////////////////////////////////////////
+// Prototypal Inheritance on Built-In Objects
+
+console.log(Object.getPrototypeOf(jonas)); // Person.prototype
+console.log(Object.getPrototypeOf(Object.getPrototypeOf(jonas))); // Object.prototype
+console.log(
+    Object.getPrototypeOf(Object.getPrototypeOf(Object.getPrototypeOf(jonas))) // null
+);
+
+console.dir(Person.prototype.constructor); // Person itself
+console.dir(Object.getPrototypeOf(jonas).constructor); // Person itself

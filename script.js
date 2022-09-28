@@ -344,10 +344,37 @@ console.log(jonas.hasOwnProperty('species')); // false, that's because this prop
 // Prototypal Inheritance on Built-In Objects
 
 console.log(Object.getPrototypeOf(jonas)); // Person.prototype
-console.log(Object.getPrototypeOf(Object.getPrototypeOf(jonas))); // Object.prototype
+console.log(Object.getPrototypeOf(Object.getPrototypeOf(jonas))); // Object.prototype(top of prototype chain)
 console.log(
     Object.getPrototypeOf(Object.getPrototypeOf(Object.getPrototypeOf(jonas))) // null
 );
 
 console.dir(Person.prototype.constructor); // Person itself
 console.dir(Object.getPrototypeOf(jonas).constructor); // Person itself
+
+const arr = [3, 6, 4, 5, 6, 9, 3]; // new Array === [], it is indeed created by the array constructor
+console.log(Object.getPrototypeOf(arr)); // Array.prototype
+console.log(Object.getPrototypeOf(arr) === Array.prototype); // the prototype property of the constructor function is gonna be the prototype of
+// all the objects created by that constructor.
+
+console.log(Object.getPrototypeOf(Object.getPrototypeOf(arr))); // Object.prototype
+console.log(
+    Object.getPrototypeOf(Object.getPrototypeOf(Object.getPrototypeOf(arr))) // null
+);
+
+// However, what we just did, so extending the prototype of a built-in object is generally not a good idea.
+// don't really get the habit of doing this for multiple reasons:
+// first reason is that the next version of JavaScript might add a method with the same name that we are adding; but it might work in a different way.
+// And so your code will then use that new method which, remember, works differently, and then that will probably break your code.
+// second reason why you shouldn't do this is because when you work on a team of developers, then this is really gonna be a bad idea, because if multiple
+// developers implement the same method with a different name then that's going to create so many bugs that it's just not worth doing this. So it's just
+// a nice and fun experiment but in practice, you should probably not do it.
+Array.prototype.unique = function () {
+    return [...new Set(this)];
+};
+
+console.log(arr.unique());
+
+const h1 = document.querySelector('h1');
+console.dir(h1);
+console.dir(_ => _ + 1); // anonymous function, simply an arrow function

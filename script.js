@@ -160,6 +160,7 @@
 // encapsulation, inheritance and polymorphism are still valid and important with prototypal inheritance.
 // let's now finally put OOP into practice and get a bit more technical.
 
+/*
 /////////////////////////////////////////////////
 // Constructor Functions and the new Operator
 // So, we can use constructor functions, to build an object using a function. Now, a constructor function is actually
@@ -378,3 +379,32 @@ console.log(arr.unique());
 const h1 = document.querySelector('h1');
 console.dir(h1);
 console.dir(_ => _ + 1); // anonymous function, simply an arrow function
+
+*/
+
+//////////////////////////////////////////////////////////
+// ES6 Classes
+
+// class expression and that's because, in fact, classes are just a special type of functions.
+// and therefore we have class expressions and class declarations.
+//const Person = class {};
+
+// class declaration
+class Person {
+    constructor(firstName, birthYear) {
+        this.firstName = firstName;
+        this.birthYear = birthYear;
+    }
+
+    // all the methods that we write in the class, so outside of the constructor, will be on the prototype of the objects.
+    // And not on the objects themselves. Just like before this is a prototypal inheritance
+    calcAge() {
+        console.log(2037 - this.birthYear);
+    }
+}
+
+const jessica = new Person('Jessica', 2010);
+console.log(jessica);
+jessica.calcAge();
+
+console.log(jessica); // prove it lol

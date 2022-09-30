@@ -139,7 +139,7 @@
 // ways of doing all this:
 // 1. the constructor function technique;
 // 2. ES6 classes;
-// 3. Object.create();
+// 3. Object.create(); // not that used
 //
 // So first, constructor functions are a way of creating objects programmatically using a function which will also set
 // the new object's prototype. And this is actually how built-in objects like arrays or maps or sets are implemented.
@@ -160,7 +160,6 @@
 // encapsulation, inheritance and polymorphism are still valid and important with prototypal inheritance.
 // let's now finally put OOP into practice and get a bit more technical.
 
-/*
 /////////////////////////////////////////////////
 // Constructor Functions and the new Operator
 // So, we can use constructor functions, to build an object using a function. Now, a constructor function is actually
@@ -204,17 +203,24 @@ const Person = function (firstName, birthYear) {
 // this new operator is actually a very special operator because what it does is to call this function here. So this Person
 // function, but it does a whole lot more than just that
 const jonas = new Person('Jonas', 1991);
-console.log(jonas);
 
 // we can use this constructor function to create as many different objects as we want
 const matilda = new Person('Matilda', 2017);
 const jack = new Person('Jack', 1975);
-console.log(matilda, jack);
 
 const jay = 'Jay';
 
 console.log(jonas instanceof Person);
 console.log(jay instanceof Person);
+
+// STATIC METHOD
+Person.hey = function () {
+    console.log(`Hey there! ${this.firstName}`);
+};
+
+Person.hey();
+console.log(jonas);
+console.log(matilda, jack);
 
 // we can create as many objects now based on this constructor function, and so this is a bit like the analogy from before,
 // where this constructor function, is now the blueprint for a house, and then each of these objects that we create through
@@ -358,6 +364,7 @@ console.log(Object.getPrototypeOf(arr)); // Array.prototype
 console.log(Object.getPrototypeOf(arr) === Array.prototype); // the prototype property of the constructor function is gonna be the prototype of
 // all the objects created by that constructor.
 
+console.log(Object.getPrototypeOf(arr)); // Array.prototype
 console.log(Object.getPrototypeOf(Object.getPrototypeOf(arr))); // Object.prototype
 console.log(
     Object.getPrototypeOf(Object.getPrototypeOf(Object.getPrototypeOf(arr))) // null
@@ -380,31 +387,110 @@ const h1 = document.querySelector('h1');
 console.dir(h1);
 console.dir(_ => _ + 1); // anonymous function, simply an arrow function
 
-*/
-
 //////////////////////////////////////////////////////////
 // ES6 Classes
 
-// class expression and that's because, in fact, classes are just a special type of functions.
-// and therefore we have class expressions and class declarations.
-//const Person = class {};
+// class expression
+//const Person = class {}; // and that's because, in fact, classes are just a special type of functions.
 
 // class declaration
-class Person {
-    constructor(firstName, birthYear) {
-        this.firstName = firstName;
+class PersonCl {
+    constructor(fullName, birthYear) {
+        this.fullName = fullName;
         this.birthYear = birthYear;
     }
 
     // all the methods that we write in the class, so outside of the constructor, will be on the prototype of the objects.
     // And not on the objects themselves. Just like before this is a prototypal inheritance
+    // Methods will be added to .prototype property of the Person class which is gonna be the prototype of the objects created by that class.
     calcAge() {
         console.log(2037 - this.birthYear);
     }
+
+    greet() {
+        console.log(`Hey ${this.fullName}`);
+    }
+
+    get age() {
+        return 2037 - this.birthYear;
+    }
+
+    // this pattern is important to understand whenever we try to set a property that already exists
+    // Now we don't need to use getters or setters and many people actually don't but yeah, as I just said sometimes it's just nice to be able to use these features
+    // and especially when we need like a validation like this by the time we are creating a new object. So that's essentially what this setter here does.
+    set fullName(name) {
+        if (name.trim().includes(' ')) {
+            // when we have a setter which is trying to set a property that does already exist, then here as a convention we add an underscore. It's not a JavaScript feature.
+            this._fullName = name; // _fullName is an instance property
+        } else {
+            alert(`${name} is not a full name!`);
+        }
+    }
+
+    get fullName() {
+        return this._fullName;
+    }
 }
 
-const jessica = new Person('Jessica', 2010);
+const jessica = new PersonCl('Jessica Davis', 2010);
 console.log(jessica);
 jessica.calcAge();
+console.log(jessica.age);
 
-console.log(jessica); // prove it lol
+console.log(Object.getPrototypeOf(jessica) === PersonCl.prototype); // prove it lol, and it's true
+
+jessica.greet();
+
+console.log(jessica.fullName);
+
+// 1. Classes are NOT hoisted, so even if they are class declarations. (functions declarations are hoisted which means we can use them before they are declared in the code, but with classes, that doesn't work)
+// 2. Just like functions, classes are also first-class citizens. (means that we can pass them into functions and also return them from functions, because classes are really just a special kind of function behind the scenes)
+// 3. The body of the class is always executed in strict mode, and so even if we didn't activate it for our entire script, all the code that is in the class will be executed in strict mode.
+// you might ask if you should use constructor functions, like we have been doing or if, instead, it's better to just use classes, and the first remark I want to do is that constructor functions are not like old or deprecated syntax.
+// So it's 100% fine to keep using them. So one more time, this is more a question of personal preference. Now, if you're asking if you should use classes without understanding prototypal inheritance, well, then
+// the reply is definitely no. Now, some people actually say that classes are really bad in general and that no one should ever be using them simply because they hide the true nature of JavaScript. But I actually don't agree
+// with that, and I think it's absolutely okay to use classes in your code as long as you understand everything. You want to feel comfortable while writing your code, and that essentially means to understand exactly what your code
+// does. So that's super important too and so if you want to be confident, you need to understand. And so that's also the whole reason why all over the course, Jonas is going into such deep detail into how everything works in
+// JavaScript. Now, what I personally like about classes is that they visually put all the code that belongs to a certain class so like all the data and all the behavior, all into one nice code block. With function constructors
+// in my opinion, it all looks just like a big mess. So it can get out of hand pretty quick. What matters is that you start thinking about this yourself and take your own decisions based on what i'm explaining.
+
+const walter = new PersonCl('Walter White', 1995);
+console.log(walter.fullName);
+
+/////////////////////////////////////////////////////
+// Setters and Getters
+
+const account = {
+    owner: 'jonas',
+    movements: [200, 530, 120, 300],
+
+    get latest() {
+        return this.movements.at(-1);
+    },
+
+    // any setter method needs to have exactly one parameter. So in this case that's simply a movement
+    set latest(move) {
+        // it is not mandatory to specify a setter when we have a getter for the same property
+        this.movements.push(move);
+    },
+};
+
+console.log(account.latest); // (getter) we write it as if it was just a property, so we don't call the method
+
+// if it was a regular method then we would have to do this
+// account.latest(50);
+
+// (setter) but now this is actually like a property and not a method
+console.log((account.latest = 50));
+
+////////////////////////////////////////////////////
+// Static Methods
+// Array.from, method from is really a method that is attached to the Array constructor, so we couldn't use the from method on an Array.
+// so this is not gonna work
+// [1, 2, 3].from() - an error
+// so from method is really attached to the entire constructor, so the Array constructor and not to the prototype property of the constructor.
+// And therefore all the arrays don't inherit this method, again because it's not on their prototype. it simply attached to the constructor itself.
+// So Array.from is basically just a simple function, but it's a function that's attached to the Array constructor and the reason for that is simply
+// so that developers know that it's related to arrays. We also say that the from method is in the Array namespace and we actually used that term before
+// for some methods in the number and in the internationalization namespace. For example, Number.parseFloat so this method is another static method and it's
+// static on the Number constructor, so it's not available on numbers, but only on this very constructor.

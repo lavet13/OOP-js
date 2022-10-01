@@ -172,7 +172,7 @@
 // Now an arrow function will actually not work as a function constructor and that's because it doesn't have it's own
 // this keyword and we need that. So only function declarations and function expressions.
 
-// this function is basically gonna produce an object and in this case for a Person.
+// this function is basically gonna produce an object and in this case from a Person.
 const Person = function (firstName, birthYear) {
     // let's use this knowledge to our advantage, because we already know that in the end of this function
     // the this keyword will basically be returned
@@ -190,11 +190,20 @@ const Person = function (firstName, birthYear) {
     //console.log(2037 - this.birthYear);
     //};
 
-    // But instead to solve this problem, we are gonna use prototypes and prototypal inheritance
-    // function constructors are not really a feature of the JavaScript language. Instead, they are simply a pattern that
+    // But instead to solve this problem, we are gonna use prototypes and prototypal inheritance.
+    // Function constructors are not really a feature of the JavaScript language. Instead, they are simply a pattern that
     // has been developed by other developers. And now everyone simply uses this. And this now includes you as a new
     // developer. So the real magic really here is this new operator. And the most important thing to understand is
     // really these four steps.
+
+    // So behind the scenes, there have been four steps.
+    // 1. New empty object is created, then afterwards
+    // 2. function is called, and (this = {}, so basically in the execution context of the Person function, the this keyword
+    // will point to this new object that was created in step number one) in this function call the this keyword will be set
+    // to this newly created object.
+    // 3. newly created object is linked to the prototype.
+    // 4. function automatically return {}; The object that was created in the beginning is then automatically returned from
+    // the constructor function
 
     // by the end of the function our the "this" keyword now has these two new properties;
 };
@@ -214,8 +223,10 @@ console.log(jonas instanceof Person);
 console.log(jay instanceof Person);
 
 // STATIC METHOD
+// there's no way that jonas object could inherit it. Only using function constructor we have access directly to method hey which is carried around by constructor property of Person
 Person.hey = function () {
     console.log(`Hey there! ${this.firstName}`);
+    console.log(this); // whatever object is calling the method will be the "this" keyword inside of that function, and so here the "this" keyword is simply that entire constructor function.
 };
 
 Person.hey();
@@ -231,15 +242,6 @@ console.log(matilda, jack);
 // the sense of traditional OOP. However we did create three objects from a constructor function. And constructor functions
 // have been used since the beginning of JavaScript to kind of simulate classes, and so therefore we can still say that,
 // for example, jonas is an instance of Person and the same goes for Matilda and for Jack.
-
-// So behind the scenes, there have been four steps.
-// 1. New empty object is created, then afterwards
-// 2. function is called, and (this = {}, so basically in the execution context of the Person function, the this keyword
-// will point to this new object that was created in step number one) in this function call the this keyword will be set
-// to this newly created object.
-// 3. newly created object is linked to the prototype.
-// 4. function automatically return {}; The object that was created in the beginning is then automatically returned from
-// the constructor function
 
 //////////////////////////////////////////////////////
 // Prototypes
@@ -269,7 +271,7 @@ console.log(Object.getPrototypeOf(jonas)); // So the prototype of the Jonas obje
 console.log(Person.prototype);
 console.log(jonas);
 console.log(Object.getPrototypeOf(jonas) === Person.prototype); // true, huh Jonas(sounded incredibly confusing, didn't it?
-// So shouldn't Person.prototype be the prototype of Person,  Well, actually, no. So this is the confusing part.
+// So shouldn't Person.prototype be the prototype of Person. Well, actually, no. So this is the confusing part.
 // So Person.prototype is actually not the prototype of Person. But instead it is what's gonna be used as the prototype of
 // all the objects that are created with the Person constructor function, so that's a subtle but important difference that
 // you need to keep in mind and in fact, what i just said that is confirmed by this comparison
@@ -286,13 +288,13 @@ console.log(Person.prototype.isPrototypeOf(Person)); // Person.prototype is not 
 
 // Anyway, where does proto property on the Jonas object actually come from? Well, remember the new operator that we talked about
 // before, well, it contains step number three, which links the empty new object to the prototype.
-// So it creates this proto property and it sets it's value to the prototype property of the function that is being called
-// And so that's exactly what is written. IT SETS THE PROTO PROPERTY ON THE OBJECT TO THE PROTOTYPE PROPERTY OF THE CONSTRUCTOR FUNCTION
+// IT SETS THE PROTO PROPERTY ON THE OBJECT SO IT'S POINT TO THE PROTOTYPE PROPERTY OF THE CONSTRUCTOR FUNCTION
 
 Person.prototype.species = 'Homo Sapiens';
-console.log(jonas.species, matilda.species); // So own properties are only the ones that are declared directly on the object itself.
-// So not including the inherited properties.
+console.log(jonas.species, matilda.species);
 
+// So own properties are only the ones that are declared directly on the object itself.
+// So not including the inherited properties.
 console.log(jonas.hasOwnProperty('species')); // false, that's because this property is not really inside of the Jonas object. It simply
 // has access to it because of it's prototype, so because it's in the prototype property of Person.
 
@@ -396,6 +398,7 @@ console.dir(_ => _ + 1); // anonymous function, simply an arrow function
 // class declaration
 class PersonCl {
     constructor(fullName, birthYear) {
+        // instance properties
         this.fullName = fullName;
         this.birthYear = birthYear;
     }
@@ -430,6 +433,12 @@ class PersonCl {
     get fullName() {
         return this._fullName;
     }
+
+    // STATIC METHOD
+    static hey() {
+        console.log(`Hey there! ${this.firstName}`);
+        console.log(this); // whatever object is calling the method will be the "this" keyword inside of that function, and so here the "this" keyword is simply that class PersonCl.
+    }
 }
 
 const jessica = new PersonCl('Jessica Davis', 2010);
@@ -452,7 +461,7 @@ console.log(jessica.fullName);
 // with that, and I think it's absolutely okay to use classes in your code as long as you understand everything. You want to feel comfortable while writing your code, and that essentially means to understand exactly what your code
 // does. So that's super important too and so if you want to be confident, you need to understand. And so that's also the whole reason why all over the course, Jonas is going into such deep detail into how everything works in
 // JavaScript. Now, what I personally like about classes is that they visually put all the code that belongs to a certain class so like all the data and all the behavior, all into one nice code block. With function constructors
-// in my opinion, it all looks just like a big mess. So it can get out of hand pretty quick. What matters is that you start thinking about this yourself and take your own decisions based on what i'm explaining.
+// in my opinion, it all looks just like a big mess. So it can get out of hand pretty quick. What matters is that you start thinking about this yourself and take your own decisions based on what Jonas is explaining.
 
 const walter = new PersonCl('Walter White', 1995);
 console.log(walter.fullName);
@@ -493,4 +502,47 @@ console.log((account.latest = 50));
 // So Array.from is basically just a simple function, but it's a function that's attached to the Array constructor and the reason for that is simply
 // so that developers know that it's related to arrays. We also say that the from method is in the Array namespace and we actually used that term before
 // for some methods in the number and in the internationalization namespace. For example, Number.parseFloat so this method is another static method and it's
-// static on the Number constructor, so it's not available on numbers, but only on this very constructor.
+// static on the Number constructor, so it's not available on numbers, but only on this very constructor. So maybe you can imagine that it should be pretty easy
+// to implement static methods ourselfs.
+
+PersonCl.hey();
+
+////////////////////////////////////////////////////
+// Object.create
+// third way of implementing prototypal inheritance or delegation and that is to use a function called Object.create() which works in a pretty different way
+// than constructor functions and classes work. There is still the idea of prototypal inheritance. However, there are no prototype properties involved and also
+// no constructor functions and no new operator, so instead, we can use Object.create to essentially manually set the prototype of an object to any other object that we want.
+
+const PersonProto = {
+    calcAge() {
+        console.log(2037 - this.birthYear);
+    },
+
+    init(firstName, birthYear) {
+        this.firstName = firstName;
+        this.birthYear = birthYear;
+    },
+};
+
+// returns a brand new object that is linked to the prototype that we passed in.
+const steven = Object.create(PersonProto);
+
+steven.name = 'Steven';
+steven.birthYear = 2002;
+steven.calcAge();
+console.log(steven);
+
+// When we use the new operator in constructor functions or classes, it automatically sets the prototype of the instances to the constructor's prototype property.
+// Now on the other hand, with Object.create, we can set the prototype of objects manually to any object that we want. And in this case, we manually set the prototype of the Steven object
+// to the PersonProto object. Now two objects are effectively linked through the proto property, just like before. So now looking at properties or methods in a prototype chain works just like it worked
+// in function constructors or classes. And so the prototype chain, in fact, looks exactly the same. The big difference is that we didn't need any constructor function and also no prototype property at all
+// to achieve the exact same thing. So this is actually a bit more straightforward and a bit more natural. And I guess, that it might also be easier to understand. In real world applications, this is actually
+// the least used way of implementing prototypal inheritance. However, it's still very important to know exactly how Object.create works, because you will still stumble upon this in the real world. And even more
+// importantly, we will need Object.create to link prototypes in the next lecture, in order to implement inheritance between classes. So with that, we are gonna take OOP to a whole new level. And the Object.create function is
+// gonna be crucial in that, as we will see. And of course, we can now verify everything I just said, using code here.
+
+console.log(Object.getPrototypeOf(steven) === PersonProto); // that is now exactly the object that we specified above.
+
+const sarah = Object.create(PersonProto);
+sarah.init('Sarah', 2000);
+sarah.calcAge();

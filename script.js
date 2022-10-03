@@ -160,6 +160,7 @@
 // encapsulation, inheritance and polymorphism are still valid and important with prototypal inheritance.
 // let's now finally put OOP into practice and get a bit more technical.
 
+/*
 /////////////////////////////////////////////////
 // Constructor Functions and the new Operator
 // So, we can use constructor functions, to build an object using a function. Now, a constructor function is actually
@@ -223,7 +224,7 @@ console.log(jonas instanceof Person);
 console.log(jay instanceof Person);
 
 // STATIC METHOD
-// there's no way that jonas object could inherit it. Only using function constructor we have access directly to method hey which is carried around by constructor property of Person
+// there's no way that jonas object could inherit it. Only using function constructor we have access directly to method "hey" which is carried around by constructor property of Person
 Person.hey = function () {
     console.log(`Hey there! ${this.firstName}`);
     console.log(this); // whatever object is calling the method will be the "this" keyword inside of that function, and so here the "this" keyword is simply that entire constructor function.
@@ -250,7 +251,7 @@ console.log(matilda, jack);
 // constructor function will get access to all the methods and properties that we define on the constructor prototype
 // property. So just to visualize in our case, this would be:
 console.log(Person.prototype); // All the objects that are created through this constructor function will inherit, so they
-// will get access to all the methods and properties that are defined on this prototype property
+// will get access to all the methods and properties that are defined on the prototype property of Person
 
 // that effectively solves this problem that we had before when we added the calcAge method directly to each of the
 // objects. We would have created a copy of this method and attached it to every single object and so that's why
@@ -270,12 +271,12 @@ console.log(Object.getPrototypeOf(jonas)); // So the prototype of the Jonas obje
 // the constructor function
 console.log(Person.prototype);
 console.log(jonas);
-console.log(Object.getPrototypeOf(jonas) === Person.prototype); // true, huh Jonas(sounded incredibly confusing, didn't it?
+console.log(Object.getPrototypeOf(jonas) === Person.prototype); // true, sounded incredibly confusing, didn't it?
 // So shouldn't Person.prototype be the prototype of Person. Well, actually, no. So this is the confusing part.
 // So Person.prototype is actually not the prototype of Person. But instead it is what's gonna be used as the prototype of
 // all the objects that are created with the Person constructor function, so that's a subtle but important difference that
 // you need to keep in mind and in fact, what i just said that is confirmed by this comparison
-// (Object.getPrototypeOf(jonas) === Person.prototype))
+// (Object.getPrototypeOf(jonas) === Person.prototype)
 
 console.log(jonas instanceof Person);
 console.log(Person.prototype.isPrototypeOf(jonas)); // this should also become true and indeed it is, so this confirms
@@ -288,7 +289,6 @@ console.log(Person.prototype.isPrototypeOf(Person)); // Person.prototype is not 
 
 // Anyway, where does proto property on the Jonas object actually come from? Well, remember the new operator that we talked about
 // before, well, it contains step number three, which links the empty new object to the prototype.
-// IT SETS THE PROTO PROPERTY ON THE OBJECT SO IT'S POINT TO THE PROTOTYPE PROPERTY OF THE CONSTRUCTOR FUNCTION
 
 Person.prototype.species = 'Homo Sapiens';
 console.log(jonas.species, matilda.species);
@@ -296,7 +296,7 @@ console.log(jonas.species, matilda.species);
 // So own properties are only the ones that are declared directly on the object itself.
 // So not including the inherited properties.
 console.log(jonas.hasOwnProperty('species')); // false, that's because this property is not really inside of the Jonas object. It simply
-// has access to it because of it's prototype, so because it's in the prototype property of Person.
+// has access to it because of it's prototype, so because it's in the prototype property of Person. It doesn't look for methods or properties in prototype chain
 
 //////////////////////////////////////////////////
 // Prototypal Inheritance and The Prototype Chain
@@ -313,7 +313,7 @@ console.log(jonas.hasOwnProperty('species')); // false, that's because this prop
 // this is now the new empty object and that's why in the function's code we set the name and birth year properties on the "this" keyword
 // because doing so will ultimately set them on the new object. So next comes the magical step.
 // 3. So now the new object is linked to the constructor function's prototype property so in this case, Person.prototype and this happens
-// internally by adding __proto__ to the new object. So Person.prototype is now the new objects prototype which is denoted in the
+// internally by adding __proto__ to the new object. So Person.prototype is now the new object's prototype which is denoted in the
 // __proto__ property of Jonas. So again, underscore proto always points to an object prototype and that's true for all objects in JavaScript
 // 4. Finally, the new object is automatically returned from the function unless we explicitly return something else. But in a constructor
 // function like Person we usually never do that. Okay, and with this the result of the new operator and the Person constructor function is a
@@ -339,12 +339,12 @@ console.log(jonas.hasOwnProperty('species')); // false, that's because this prop
 // Object.prototype. Why is that? Well, Person.prototype is just a simple object which means that it has been built by the built-in object
 // constructor function and this is actually the function that is called behind the scenes whenever we create an object literal. So just an object
 // simply with curly braces. So essentially the curly braces are just like a shortcut to writing a new object. But anyway, what matters here is that
-// Person.prototype itself needs to have a prototype and since it has been created by the object constructor function it's prototype is gonna be
+// Person.prototype itself needs to have a prototype and since it has been created by the Object constructor function it's prototype is gonna be
 // Object.prototype, it's the same logic as with the Jonas object. So, since Jonas has been built by a Person, Person.prototype is the prototype of
 // Jonas. Now this entire series of links between the objects is what is called the prototype chain and Object.prototype is usually the top of the
 // prototype chain which means that it's prototype is null. So it's underscore proto property will simply point to null which then marks the end of
 // the prototype chain. So in a certain way the prototype chain is very similar to the scope chain but with prototypes. So, in the scope chain
-// whenever JavaScript can'nt find a certain variable in a certain scope, it looks up into the next scope and tries to find the
+// whenever JavaScript can't find a certain variable in a certain scope, it looks up into the next scope and tries to find the
 // variable there. On the other hand in the prototype chain whenever JavaScript can't find a certain property or method in a certain object it's
 // gonna look up into the next prototype in the prototype chain and see if it can find it there. So again the prototype chain is pretty similar
 // to the scope chain but instead of working with scopes, it works with properties and methods in objects.
@@ -437,7 +437,7 @@ class PersonCl {
     // STATIC METHOD
     static hey() {
         console.log(`Hey there! ${this.firstName}`);
-        console.log(this); // whatever object is calling the method will be the "this" keyword inside of that function, and so here the "this" keyword is simply that class PersonCl.
+        console.log(this); // whatever object is calling the method will be the "this" keyword inside of that method, and so here the "this" keyword is simply that class PersonCl.
     }
 }
 
@@ -494,7 +494,7 @@ console.log((account.latest = 50));
 
 ////////////////////////////////////////////////////
 // Static Methods
-// Array.from, method from is really a method that is attached to the Array constructor, so we couldn't use the from method on an Array.
+// Array.from, method from is really a method that is attached to the Array constructor, so we couldn't use the from method on an array instance.
 // so this is not gonna work
 // [1, 2, 3].from() - an error
 // so from method is really attached to the entire constructor, so the Array constructor and not to the prototype property of the constructor.
@@ -544,5 +544,69 @@ console.log(steven);
 console.log(Object.getPrototypeOf(steven) === PersonProto); // that is now exactly the object that we specified above.
 
 const sarah = Object.create(PersonProto);
+console.log(sarah);
 sarah.init('Sarah', 2000);
 sarah.calcAge();
+console.log(sarah);
+*/
+
+/////////////////////////////////////////////////////
+// Inheritance Between _Classes__ Constructor Functions
+// All the techniques(constructor functions, ESX classes, Object.create) basically allow objects to inherit methods from it's prototype. So to delegate their behavior to their prototype.
+// Now it's time to turn our attention to more real inheritance.
+
+const Person = function (firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+};
+
+Person.prototype.calcAge = function () {
+    console.log(2037 - this.birthYear);
+};
+
+// we want the Student class to be the child class and inherit from the Person class
+// this way all instances of Student could also get access to methods from the Person's prototype property
+// like the calcAge method through the prototype chain. And that's the whole idea of inheritance. It's the child
+// classes can share behavior from their parent classes. we want to make Person.prototype, the prototype of Student.prototype
+// Or in other words, we want to set the underscore prototype property of Student to Person.prototype.
+const Student = function (firstName, birthYear, course) {
+    Person.call(this, firstName, birthYear);
+    this.course = course;
+};
+
+// Linking prototypes
+Student.prototype = Object.create(Person.prototype);
+
+Student.prototype.introduce = function () {
+    console.log(`My name is ${this.firstName} and I study ${this.course}`);
+};
+
+const mike = new Student('Mike', 2020, 'Computer Science');
+console.log(mike);
+mike.introduce();
+mike.calcAge();
+
+console.log(mike); // Student
+console.log(Object.getPrototypeOf(mike)); // Object.create(Person.prototype) basically
+console.log(Object.getPrototypeOf(Object.getPrototypeOf(mike))); // Person.prototype
+console.log(
+    Object.getPrototypeOf(Object.getPrototypeOf(Object.getPrototypeOf(mike))) // Object.prototype
+);
+console.log(
+    // null
+    Object.getPrototypeOf(
+        Object.getPrototypeOf(
+            Object.getPrototypeOf(Object.getPrototypeOf(mike))
+        )
+    )
+);
+
+// it could be false if we wouldn't do "Object.create(Person.prototype)"
+console.log(mike instanceof Student);
+console.log(mike instanceof Person); // true, because we linked the prototypes together after we have written that "Object.create(Person.prototype)"
+console.log(mike instanceof Object); // true
+
+// hmm
+console.dir(Student.prototype.constructor); // Person?
+// fix
+Student.prototype.constructor = Student;

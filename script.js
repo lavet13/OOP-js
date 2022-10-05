@@ -610,3 +610,62 @@ console.log(mike instanceof Object); // true
 console.dir(Student.prototype.constructor); // Person?
 // fix
 Student.prototype.constructor = Student;
+
+//////////////////////////////////////////////////////
+// Inheritance Between _Classes__ ES6 Classes
+
+class PersonCl {
+    constructor(fullName, birthYear) {
+        // instance properties
+        this.fullName = fullName;
+        this.birthYear = birthYear;
+    }
+
+    // all the methods that we write in the class, so outside of the constructor, will be on the prototype of the objects.
+    // And not on the objects themselves. Just like before this is a prototypal inheritance
+    // Methods will be added to .prototype property of the Person class which is gonna be the prototype of the objects created by that class.
+    calcAge() {
+        console.log(2037 - this.birthYear);
+    }
+
+    greet() {
+        console.log(`Hey ${this.fullName}`);
+    }
+
+    get age() {
+        return 2037 - this.birthYear;
+    }
+
+    // this pattern is important to understand whenever we try to set a property that already exists
+    // Now we don't need to use getters or setters and many people actually don't but yeah, as I just said sometimes it's just nice to be able to use these features
+    // and especially when we need like a validation like this by the time we are creating a new object. So that's essentially what this setter here does.
+    set fullName(name) {
+        if (name.trim().includes(' ')) {
+            // when we have a setter which is trying to set a property that does already exist, then here as a convention we add an underscore. It's not a JavaScript feature.
+            this._fullName = name; // _fullName is an instance property
+        } else {
+            alert(`${name} is not a full name!`);
+        }
+    }
+
+    get fullName() {
+        return this._fullName;
+    }
+
+    // STATIC METHOD
+    static hey() {
+        console.log(`Hey there! ${this.firstName}`);
+        console.log(this); // whatever object is calling the method will be the "this" keyword inside of that method, and so here the "this" keyword is simply that class PersonCl.
+    }
+}
+
+class StudentCl extends PersonCl {
+    constructor(fullName, birthYear, course) {
+        //Always needs to happen first! because this call to the super function is responsible for creating the "this" keyword in subclass
+        super(fullName, birthYear);
+        this.course = course;
+    }
+}
+
+const martha = new StudentCl('Martha Jones', 2012); // without specifying the constructor function it still works
+//const martha = new StudentCl('Martha Jones', 2012, 'Computer Science');

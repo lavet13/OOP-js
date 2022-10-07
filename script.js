@@ -550,16 +550,19 @@ sarah.calcAge();
 console.log(sarah);
 */
 
+/*
 /////////////////////////////////////////////////////
 // Inheritance Between _Classes__ Constructor Functions
 // All the techniques(constructor functions, ESX classes, Object.create) basically allow objects to inherit methods from it's prototype. So to delegate their behavior to their prototype.
 // Now it's time to turn our attention to more real inheritance.
 
 const Person = function (firstName, birthYear) {
+    // instance properties and methods
     this.firstName = firstName;
     this.birthYear = birthYear;
 };
 
+// prototype methods and properties
 Person.prototype.calcAge = function () {
     console.log(2037 - this.birthYear);
 };
@@ -567,8 +570,8 @@ Person.prototype.calcAge = function () {
 // we want the Student class to be the child class and inherit from the Person class
 // this way all instances of Student could also get access to methods from the Person's prototype property
 // like the calcAge method through the prototype chain. And that's the whole idea of inheritance. It's the child
-// classes can share behavior from their parent classes. we want to make Person.prototype, the prototype of Student.prototype
-// Or in other words, we want to set the underscore prototype property of Student to Person.prototype.
+// classes can share behavior from their parent classes. We want to set the underscore proto property of Student to Person.prototype.
+
 const Student = function (firstName, birthYear, course) {
     Person.call(this, firstName, birthYear);
     this.course = course;
@@ -576,6 +579,7 @@ const Student = function (firstName, birthYear, course) {
 
 // Linking prototypes
 Student.prototype = Object.create(Person.prototype);
+// after that we get immediately Student.prototype.constructor have setted to Person
 
 Student.prototype.introduce = function () {
     console.log(`My name is ${this.firstName} and I study ${this.course}`);
@@ -592,22 +596,15 @@ console.log(Object.getPrototypeOf(Object.getPrototypeOf(mike))); // Person.proto
 console.log(
     Object.getPrototypeOf(Object.getPrototypeOf(Object.getPrototypeOf(mike))) // Object.prototype
 );
-console.log(
-    // null
-    Object.getPrototypeOf(
-        Object.getPrototypeOf(
-            Object.getPrototypeOf(Object.getPrototypeOf(mike))
-        )
-    )
-);
 
 // it could be false if we wouldn't do "Object.create(Person.prototype)"
-console.log(mike instanceof Student);
-console.log(mike instanceof Person); // true, because we linked the prototypes together after we have written that "Object.create(Person.prototype)"
+console.log(mike instanceof Student); // true
+console.log(mike instanceof Person); // false, if we didn't link Student to the Person, otherwise true, because we linked the prototypes together after we have written that "Object.create(Person.prototype)"
 console.log(mike instanceof Object); // true
 
 // hmm
 console.dir(Student.prototype.constructor); // Person?
+
 // fix
 Student.prototype.constructor = Student;
 
@@ -659,13 +656,106 @@ class PersonCl {
     }
 }
 
+// if we don't need any new properties, then you don't even need to bother writing a constructor method in the child class
+//class StudentCl extends PersonCl {
+//}
+
+//const martha = new StudentCl('Martha Jones', 2012); // without specifying the constructor function of StudentCl it still works
+
+// to implement inheritance between ESX classes, we need two ingredients. We need the extends keyword and we need the super function
+// that extends keyword alone link the prototypes behind the scenes without us even having to think about that
 class StudentCl extends PersonCl {
     constructor(fullName, birthYear, course) {
-        //Always needs to happen first! because this call to the super function is responsible for creating the "this" keyword in subclass
+        // super is basically the constructor function of the parent class
+        // Always needs to happen first! because this call to the super function is responsible for creating the "this" keyword in subclass
+        // we will create instance properties and methods to our StudentCl when we call the super method
         super(fullName, birthYear);
         this.course = course;
     }
+
+    // essentially overriding the method coming from the parent class
+    // we can also say that the calcAge method is shadowing the one that is in the parent class
+    calcAge() {
+        console.log(
+            `I'm ${
+                2037 - this.birthYear
+            } years old, but as a student I feel more like ${
+                2037 - this.birthYear + 10
+            }`
+        );
+    }
+
+    introduce() {
+        console.log(`My name is ${this.fullName} and I study ${this.course}`);
+    }
+
+    // invoking this function with call method
+    static studentMethod() {
+        console.log(`Hello, ${this.fullName}`);
+    }
 }
 
-const martha = new StudentCl('Martha Jones', 2012); // without specifying the constructor function it still works
-//const martha = new StudentCl('Martha Jones', 2012, 'Computer Science');
+const martha = new StudentCl('Martha Jones', 2012, 'Computer Science');
+const ivan = new StudentCl('Ivan Skinder', 2000, 'Computer Science');
+martha.introduce();
+martha.calcAge();
+ivan.calcAge();
+console.log(martha);
+
+///////////////////////////////////////////////
+// Inheritance Between _Classes__ Object.create
+
+const PersonProto = {
+    calcAge() {
+        console.log(2037 - this.birthYear);
+    },
+
+    init(firstName, birthYear) {
+        this.firstName = firstName;
+        this.birthYear = birthYear;
+    },
+};
+
+//const steven = Object.create(PersonProto);
+
+const StudentProto = Object.create(PersonProto);
+
+// method init is emulate the constructor function
+StudentProto.init = function (firstName, birthYear, course) {
+    PersonProto.init.call(this, firstName, birthYear);
+    this.course = course;
+};
+
+StudentProto.introduce = function () {
+    console.log(`My name is ${this.firstName} and I study ${this.course}`);
+};
+
+// the StudentProto object is now the prototype of jay
+// the PersonProto object is in turn the prototype of StudentProto
+// and so therefore, PersonProto is a parent prototype of jay which means that it's in its prototype chain
+const jay = Object.create(StudentProto);
+jay.init('Vanya', 2000, 'Computer Science');
+jay.calcAge();
+jay.introduce();
+*/
+
+////////////////////////////////////////////////////////
+// Another Class Example
+
+class Account {
+    constructor(owner, currency, pin) {
+        this.owner = owner;
+        this.currency = currency;
+        this.pin = pin;
+        this.movements = [];
+        this.locale = navigator.language;
+
+        console.log(`Thanks for opening an account, ${owner}`);
+    }
+}
+
+const acc1 = new Account('Jonas', 'EUR', 1111);
+console.log(acc1);
+
+acc1.movements.push(250);
+acc1.movements.push(-140);

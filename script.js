@@ -752,10 +752,40 @@ class Account {
 
         console.log(`Thanks for opening an account, ${owner}`);
     }
+
+    // these methods here are the public interface to our objects and we also call this API
+    // it is a lot better than having to manually manipulate these properties outside of the object, as we did here
+    deposit(val) {
+        this.movements.push(val);
+    }
+
+    // this withdraw method here actually abstracts the fact that a withdrawal is basically a negative movement
+    withdraw(val) {
+        this.deposit(-Math.abs(val));
+    }
+
+    approveLoan(val) {
+        return true;
+    }
+
+    requestLoan(val) {
+        if (this.approveLoan(val)) {
+            this.deposit(val);
+            console.log(`Loan approved`);
+        }
+    }
 }
 
 const acc1 = new Account('Jonas', 'EUR', 1111);
-console.log(acc1);
+//acc1.movements.push(250);
+//acc1.movements.push(-140); // this minus here is something that the user of this object should be caring about
+acc1.deposit(250);
+acc1.withdraw(140);
+acc1.requestLoan(1000);
+acc1.approveLoan(1000); // kind of internal method that we should not even be allowed to access to, only the requestLoan method should be able to use
 
-acc1.movements.push(250);
-acc1.movements.push(-140);
+console.log(acc1);
+console.log(acc1.pin);
+
+///////////////////////////////////////////////////////
+// Encapsulation_ Protected Properties and Methods

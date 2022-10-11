@@ -259,6 +259,7 @@ console.log(Person.prototype); // All the objects that are created through this 
 // them exists, but then all of the objects that are created using the constructor function can basically reuse this
 // function on themselves. And so the "this" keyword, of course, in each of them is as always set to the object that is
 // calling the method
+
 Person.prototype.calcAge = function () {
     console.log(2037 - this.birthYear);
 };
@@ -743,49 +744,119 @@ jay.introduce();
 // Another Class Example
 
 class Account {
+    // 1) Public fields (instances)
+    // these public fields are gonna be present on all the instances that we are creating through the class. So they are not on the prototype
+    locale = navigator.language;
+    //_movements = [];
+
+    // 2) Private fields (instances)
+    #movements = [];
+    #pin;
+
     constructor(owner, currency, pin) {
         this.owner = owner;
         this.currency = currency;
-        this.pin = pin;
-        this.movements = [];
-        this.locale = navigator.language;
+        this.#pin = pin;
+        //this._movements = [];
+        //this.locale = navigator.language;
 
         console.log(`Thanks for opening an account, ${owner}`);
+    }
+
+    // 3) Public methods
+    // Public interface
+    getMovements() {
+        return this.#movements;
     }
 
     // these methods here are the public interface to our objects and we also call this API
     // it is a lot better than having to manually manipulate these properties outside of the object, as we did here
     deposit(val) {
-        this.movements.push(val);
+        this.#movements.push(val);
+        return this;
     }
 
     // this withdraw method here actually abstracts the fact that a withdrawal is basically a negative movement
     withdraw(val) {
         this.deposit(-Math.abs(val));
+        return this;
     }
 
-    approveLoan(val) {
+    // protected method
+    _approveLoan(val) {
         return true;
     }
 
     requestLoan(val) {
-        if (this.approveLoan(val)) {
+        //if (this.#approveLoan(val)) {
+        if (this._approveLoan(val)) {
             this.deposit(val);
             console.log(`Loan approved`);
         }
+
+        return this;
     }
+
+    // not available on all the instances, but only on the class itself
+    static helper() {
+        console.log('Helper');
+    }
+
+    // 4) Private methods doesn't work as expected to be
+    //#approveLoan(val) {
+    //return true;
+    //}
 }
 
 const acc1 = new Account('Jonas', 'EUR', 1111);
-//acc1.movements.push(250);
-//acc1.movements.push(-140); // this minus here is something that the user of this object should be caring about
+//console.log(acc1.#movements); // I cannot get access
+acc1.movements?.push(250);
+acc1.movements?.push(-140); // this minus here is something that the user of this object should be caring about
 acc1.deposit(250);
 acc1.withdraw(140);
 acc1.requestLoan(1000);
-acc1.approveLoan(1000); // kind of internal method that we should not even be allowed to access to, only the requestLoan method should be able to use
+console.log(acc1.approveLoan?.(1000)); // kind of internal method that we should not even be allowed to access to, only the requestLoan method should be able to use
+console.log(acc1.getMovements());
 
 console.log(acc1);
 console.log(acc1.pin);
+Account.helper();
+//console.log(acc1.#movements);
+//console.log(acc1.#pin);
+//console.log(acc1.#approveLoan());
+
+// Chaining
+acc1.deposit(300).deposit(500).withdraw(35).requestLoan(25000).withdraw(4000);
 
 ///////////////////////////////////////////////////////
 // Encapsulation_ Protected Properties and Methods
+// encapsulation basically means to keep some properties and methods private inside the class so that they are not accessible from outside of the class.
+// Then the rest of the methods are basically exposed as a public interface, which we can also call API. So this is essential to do in anything more than a toy application.
+// Two big reasons why we need encapsulation and data privacy:
+// 1. Prevent code from outside of a class to accidentally manipulate our data inside the class. And that's exactly what we did by the end of the last lecture here.
+// 2. When we expose only a small interface so a small API consisting only of a few public methods then we can change all the other internal methods with more confidence.
+// Because in this case, we can be sure that external code does not rely on these private methods and so therefore our code will not break when we do internal changes. So
+// that's what encapsulation and data privacy are and the reasons for it.
+// JavaScript actually don't yet support real data privacy and encapsulation. Now there is a proposal to add truly private class fields and methods to the language but it's
+// completely ready yet. I will still show it to you in the next lecture but even when this feature ships in the browser it will take some time until you can use it with confidence.
+// We will basically fake encapsulation by simply using a convention.
+
+/////////////////////////////////////////////////////
+// Encapsulation_ Private Class Fields and Methods
+// why is the proprosal called Class fields? in traditional OOP languages like Java and C++, properties are usually called fields. So what this means is that with this new proposal,
+// JavaScript is moving away from the idea that classes are just syntactic sugar over constructor functions. Because with this new class features classes actually start to have abilities
+// that we didn't previously have with constructor functions. Now to many developers consider this to be a big problem, but personally, i'm not sure if it is a such a big deal for average JavaScript developer.
+// So as long as you still understand how prototypal inheritance and function constructors work then I believe that you will be fine. But anyway, no matter if you end up using these new class features, let's now start
+// exploring them.
+// In this proposal there are actually four different kinds of fields and methods, and actually it's even eight but it's fine
+// 1. Public fields
+// 2. Private fields
+// 3. Public methods
+// 4. Private methods
+// (there is also the static version)
+
+//////////////////////////////////////////////////////////
+// Chaining Methods
+
+/////////////////////////////////////////////////////////
+//

@@ -580,7 +580,7 @@ const Student = function (firstName, birthYear, course) {
 
 // Linking prototypes
 Student.prototype = Object.create(Person.prototype);
-// after that we get immediately Student.prototype.constructor have setted to Person
+// after that we need to get Student.prototype.constructor had setted to Person
 
 Student.prototype.introduce = function () {
     console.log(`My name is ${this.firstName} and I study ${this.course}`);
@@ -663,13 +663,13 @@ class PersonCl {
 
 //const martha = new StudentCl('Martha Jones', 2012); // without specifying the constructor function of StudentCl it still works
 
-// to implement inheritance between ESX classes, we need two ingredients. We need the extends keyword and we need the super function
+// to implement inheritance between ESX classes, we need two ingredients. We need the "extends" keyword and we need the super function
 // that extends keyword alone link the prototypes behind the scenes without us even having to think about that
 class StudentCl extends PersonCl {
     constructor(fullName, birthYear, course) {
         // super is basically the constructor function of the parent class
         // Always needs to happen first! because this call to the super function is responsible for creating the "this" keyword in subclass
-        // we will create instance properties and methods to our StudentCl when we call the super method
+        // we will create instance properties to our StudentCl when we call the super method, methods that are in the parent class just will be inherited by our subclass
         super(fullName, birthYear);
         this.course = course;
     }
@@ -690,7 +690,7 @@ class StudentCl extends PersonCl {
         console.log(`My name is ${this.fullName} and I study ${this.course}`);
     }
 
-    // invoking this function with call method
+    // invoking this function with call method by setting this keyword to the object that is calling the method
     static studentMethod() {
         console.log(`Hello, ${this.fullName}`);
     }
@@ -837,7 +837,7 @@ acc1.deposit(300).deposit(500).withdraw(35).requestLoan(25000).withdraw(4000);
 // 2. When we expose only a small interface so a small API consisting only of a few public methods then we can change all the other internal methods with more confidence.
 // Because in this case, we can be sure that external code does not rely on these private methods and so therefore our code will not break when we do internal changes. So
 // that's what encapsulation and data privacy are and the reasons for it.
-// JavaScript actually don't yet support real data privacy and encapsulation. Now there is a proposal to add truly private class fields and methods to the language but it's
+// JavaScript actually don't yet support real data privacy and encapsulation. Now there is a proposal to add truly private class fields and methods to the language but it's not
 // completely ready yet. I will still show it to you in the next lecture but even when this feature ships in the browser it will take some time until you can use it with confidence.
 // We will basically fake encapsulation by simply using a convention.
 
@@ -852,11 +852,59 @@ acc1.deposit(300).deposit(500).withdraw(35).requestLoan(25000).withdraw(4000);
 // 1. Public fields
 // 2. Private fields
 // 3. Public methods
-// 4. Private methods
-// (there is also the static version)
+// 4. Private methods - seems not to work
+//
+// 5. Public static fields
+// 6. Private static fields
+// 7. Public static methods
+// 8. Private static methods - i guess work, but if so, when do i actually use that or never needed probably which more likely
 
 //////////////////////////////////////////////////////////
 // Chaining Methods
 
 /////////////////////////////////////////////////////////
-//
+// ESX Classes Summary
+
+/*
+class Student extends Person {
+    university = 'university of Lisbon';
+    #studyHours = 0;
+    #course;
+    static numSubjects = 10;
+
+    constructor(fullName, birthYear, startYear, course) {
+        super(fullName, birthYear);
+        
+        this.startYear = startYear;
+
+        this.#course = course;
+    }
+
+    introduce() {
+        console.log(`I study ${this.#course} at ${this.university}`);
+    }
+
+    study(h) {
+        this.#makeCoffe();
+        this.#studyHours += h;
+    }
+
+    #makeCoffee() {
+        return `Here is a coffe for you!`;
+    }
+
+    get testScore() {
+        return this._testScore;
+    }
+
+    set testScore(score) {
+        this._testScore = score <= 20 && score >= 0 ? score : 0;
+    }
+
+    static printCurriculum() {
+        console.log(`There are ${this.numSubjects} subjects`);
+    }
+}
+
+const student = new Student('Jonas', 2020, 2037, 'Medicine');
+*/

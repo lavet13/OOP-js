@@ -592,7 +592,7 @@ mike.introduce();
 mike.calcAge();
 
 console.log(mike); // Student
-console.log(Object.getPrototypeOf(mike)); // Object.create(Person.prototype) basically
+console.log(Object.getPrototypeOf(mike)); // Object.create(Person.prototype) basically, so StudentProto
 console.log(Object.getPrototypeOf(Object.getPrototypeOf(mike))); // Person.prototype
 console.log(
     Object.getPrototypeOf(Object.getPrototypeOf(Object.getPrototypeOf(mike))) // Object.prototype

@@ -205,13 +205,11 @@ const Person = function (firstName, birthYear) {
     // 3. newly created object is linked to the prototype.
     // 4. function automatically return {}; The object that was created in the beginning is then automatically returned from
     // the constructor function
-
-    // by the end of the function our the "this" keyword now has these two new properties;
 };
 
 // we call the constructor function using the new keyword
-// this new operator is actually a very special operator because what it does is to call this function here. So this Person
-// function, but it does a whole lot more than just that
+// this new operator is actually a very special operator because what it does is to call this function here, but it does 
+// a whole lot more than just that
 const jonas = new Person('Jonas', 1991);
 
 // we can use this constructor function to create as many different objects as we want
@@ -281,7 +279,7 @@ console.log(Object.getPrototypeOf(jonas) === Person.prototype); // true, sounded
 
 console.log(jonas instanceof Person);
 console.log(Person.prototype.isPrototypeOf(jonas)); // this should also become true and indeed it is, so this confirms
-// one more time that Person.prototype is indeed the prototype of Jonas
+// one more time that Person.prototype is indeed the prototype of jonas
 console.log(Person.prototype.isPrototypeOf(matilda)); // the same for Matilda of course as well
 console.log(Person.prototype.isPrototypeOf(Person)); // Person.prototype is not the prototype of Person, it is false, so
 // this very common confusion comes from bad naming of this property. So the fact that it's called prototype
@@ -380,6 +378,7 @@ console.log(
 // second reason why you shouldn't do this is because when you work on a team of developers, then this is really gonna be a bad idea, because if multiple
 // developers implement the same method with a different name then that's going to create so many bugs that it's just not worth doing this. So it's just
 // a nice and fun experiment but in practice, you should probably not do it.
+
 Array.prototype.unique = function () {
     return [...new Set(this)];
 };
@@ -437,7 +436,7 @@ class PersonCl {
 
     // STATIC METHOD
     static hey() {
-        console.log(`Hey there! ${this.firstName}`);
+        console.log(`Hey there! ${this.fullName}`);
         console.log(this); // whatever object is calling the method will be the "this" keyword inside of that method, and so here the "this" keyword is simply that class PersonCl.
     }
 }

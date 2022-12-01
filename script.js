@@ -200,7 +200,7 @@ const Person = function (firstName, birthYear) {
     // So behind the scenes, there have been four steps.
     // 1. New empty object is created, then afterwards
     // 2. function is called, and (this = {}, so basically in the execution context of the Person function, the this keyword
-    // will point to this new object that was created in step number one) in this function call the this keyword will be set
+    // will point to this new object that was created in step number one) in this function call the "this" keyword will be set
     // to this newly created object.
     // 3. newly created object is linked to the prototype.
     // 4. function automatically return {}; The object that was created in the beginning is then automatically returned from
@@ -494,7 +494,7 @@ console.log((account.latest = 50));
 
 ////////////////////////////////////////////////////
 // Static Methods
-// Array.from, method from is really a method that is attached to the Array constructor, so we couldn't use the from method on an array instance.
+// Array.from, method from is really a method that is attached to the Array constructor, so we couldn't use the from method on an array instances.
 // so this is not gonna work
 // [1, 2, 3].from() - an error
 // so from method is really attached to the entire constructor, so the Array constructor and not to the prototype property of the constructor.
@@ -579,7 +579,7 @@ const Student = function (firstName, birthYear, course) {
 
 // Linking prototypes
 Student.prototype = Object.create(Person.prototype);
-// after that we need to get Student.prototype.constructor had setted to Person
+// after that we need to get our Student.prototype.constructor setted to Person
 
 Student.prototype.introduce = function () {
     console.log(`My name is ${this.firstName} and I study ${this.course}`);
